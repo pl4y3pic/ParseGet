@@ -208,12 +208,9 @@ namespace ParseGet
         {
             if (!TaskList.Items.ContainsKey(url))
             {
-                Util.FlashWindow(Handle, 3);
                 //Clipboard.Clear();
-                if (Tray.Visible)
-                {
-                    Tray.ShowBalloonTip(5000, Resources.NewTask, url.Length > 50 ? url.Remove(47) + "..." : url, ToolTipIcon.Info);
-                }
+                if (Visible) Util.FlashWindow(Handle, 3);
+                //else Tray.ShowBalloonTip(3000, Resources.NewTask, url, ToolTipIcon.Info);
                 RunTask(NewTask(url));
             }
             else
@@ -293,12 +290,12 @@ namespace ParseGet
                 else
                 {
                     Log(Resources.DownloadCompleted, sender);
-                    if (Tray.Visible)
+                    if (!Visible)
                     {
-                        Tray.ShowBalloonTip(5000, Resources.DownloadCompleted,
+                        Tray.ShowBalloonTip(3000, Resources.DownloadCompleted,
                             (downloader.Tag as ListViewItem).SubItems[ITEM_NAME].Text, ToolTipIcon.Info);
                     }
-                    //Tools.FlashWindow(Handle, 3);
+                    //Util.FlashWindow(Handle, 3);
                 }
 
                 TaskList.Items.Remove(downloader.Tag as ListViewItem);
@@ -308,9 +305,10 @@ namespace ParseGet
                 {
                     RunTasks();
                 }
-                else
+                else // all tasks completed
                 {
-                    Util.FlashWindow(Handle, 0); // no tasks left
+                    if (Visible) Util.FlashWindow(Handle, 0);
+                    else Tray.ShowBalloonTip(5000, Resources.DownloadCompleted, Text, ToolTipIcon.Info);
                     Taskbar.SetProgressState(TaskbarState.NoProgress);
                 }
             }
