@@ -18,6 +18,9 @@ namespace ParseGet
         {
             try
             {
+                AppConfig.Load();
+                SetCultureInfo();
+
                 if (args.Length > 0)
                 {
                     foreach (string s in args)
@@ -27,10 +30,6 @@ namespace ParseGet
                 }
                 else
                 {
-                    AppConfig.Load();
-
-                    SetCultureInfo();
-
                     Application.EnableVisualStyles();
                     Application.SetCompatibleTextRenderingDefault(false);
                     Application.Run(new MainForm());
