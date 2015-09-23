@@ -87,6 +87,7 @@
             this.colProgress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSpeed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colETA = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.miStayTop = new System.Windows.Forms.ToolStripMenuItem();
             this.Toolbar.SuspendLayout();
             this.cmTaskList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplit)).BeginInit();
@@ -173,7 +174,6 @@
             this.btnOption});
             this.Toolbar.Name = "Toolbar";
             this.Toolbar.ShowItemToolTips = false;
-            this.Toolbar.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Toolbar_MouseClick);
             this.Toolbar.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Toolbar_MouseDoubleClick);
             // 
             // lbSplit
@@ -213,6 +213,7 @@
             this.miClipboard,
             this.miParseOnly,
             this.miSeparator0,
+            this.miStayTop,
             this.miLanguage});
             resources.ApplyResources(this.btnOption, "btnOption");
             this.btnOption.Name = "btnOption";
@@ -513,6 +514,13 @@
             // 
             resources.ApplyResources(this.colETA, "colETA");
             // 
+            // miStayTop
+            // 
+            this.miStayTop.CheckOnClick = true;
+            this.miStayTop.Name = "miStayTop";
+            resources.ApplyResources(this.miStayTop, "miStayTop");
+            this.miStayTop.CheckedChanged += new System.EventHandler(this.miStayTop_CheckedChanged);
+            // 
             // MainForm
             // 
             resources.ApplyResources(this, "$this");
@@ -593,6 +601,7 @@
         private System.Windows.Forms.ToolStripMenuItem notice;
         private System.Windows.Forms.ToolStripMenuItem warn;
         private System.Windows.Forms.ToolStripMenuItem error;
+        private System.Windows.Forms.ToolStripMenuItem miStayTop;
     }
 }
 
