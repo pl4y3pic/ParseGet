@@ -892,16 +892,15 @@ namespace ParseGet
             URL.Focus();
         }
 
-        private void Toolbar_MouseClick(object sender, MouseEventArgs e)
-        {
-            TopMost = !TopMost;
-        }
-
         private void Toolbar_MouseDoubleClick(object sender, MouseEventArgs e)
         {
-            TopMost = !TopMost;
             Hide();
             Tray.Visible = true;
+        }
+
+        private void miStayTop_CheckedChanged(object sender, EventArgs e)
+        {
+            TopMost = miStayTop.Checked;
         }
     }
 }
