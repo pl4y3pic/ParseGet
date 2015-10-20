@@ -130,6 +130,8 @@ namespace ParseGet
 
                 item.ImageIndex = 1;
                 item.Tag = downloader;
+
+                Util.PreventSleep();
             }
         }
 
@@ -310,6 +312,11 @@ namespace ParseGet
                     if (Visible) Util.FlashWindow(Handle, 0);
                     else Tray.ShowBalloonTip(5000, Resources.DownloadCompleted, Text, ToolTipIcon.Info);
                     Taskbar.SetProgressState(TaskbarState.NoProgress);
+                    if (miShutdown.Checked && !e.Cancelled)
+                    {
+                        Process.Start("shutdown.exe", "-r -f");
+                    }
+                    Util.ResotreSleep();
                 }
             }
         }
@@ -357,6 +364,7 @@ namespace ParseGet
                         long filesize = downloader.FileSize;
                         int speed = downloader.Speed;
 
+                        item.SubItems[ITEM_SIZE].Text = Util.ToSize(downloader.FileSize);
                         item.SubItems[ITEM_SPEED].Text = Util.ToSpeed(speed);
                         if (filesize > 0)
                         {

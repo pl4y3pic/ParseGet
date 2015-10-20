@@ -19,6 +19,14 @@ namespace KK
 
     internal abstract class Util
     {
+        [Flags]
+        internal enum ExecutionFlag : uint
+        {
+            System = 0x00000001,
+            Display = 0x00000002,
+            Continus = 0x80000000,
+        }
+
         public static class NativeMethods
         {
             internal const UInt32 FLASHW_ALL = 0x00000003;
@@ -55,6 +63,9 @@ namespace KK
             [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern IntPtr GetProcAddress(IntPtr hdl, string name);
 
+            [DllImport("kernel32.dll")]
+            internal static extern uint SetThreadExecutionState(ExecutionFlag flags);
+
             [StructLayout(LayoutKind.Sequential)]
             internal struct FLASHWINFO
             {
@@ -64,6 +75,38 @@ namespace KK
                 public UInt32 uCount;
                 public UInt32 dwTimeout;
             }
+        }
+
+        /// <summary>
+        ///阻止系统休眠，直到线程结束恢复休眠策略
+        /// </summary>
+        /// <param name="includeDisplay">是否阻止关闭显示器</param>
+        public static void PreventSleep(bool includeDisplay = false)
+        {
+            if (includeDisplay)
+                NativeMethods.SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Display | ExecutionFlag.Continus);
+            else
+                NativeMethods.SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Continus);
+        }
+
+        /// <summary>
+        ///恢复系统休眠策略
+        /// </summary>
+        public static void ResotreSleep()
+        {
+            NativeMethods.SetThreadExecutionState(ExecutionFlag.Continus);
+        }
+
+        /// <summary>
+        ///重置系统休眠计时器
+        /// </summary>
+        /// <param name="includeDisplay">是否阻止关闭显示器</param>
+        public static void ResetSleepTimer(bool includeDisplay = false)
+        {
+            if (includeDisplay)
+                NativeMethods.SetThreadExecutionState(ExecutionFlag.System | ExecutionFlag.Display);
+            else
+                NativeMethods.SetThreadExecutionState(ExecutionFlag.System);
         }
 
         public static void FlashWindow(IntPtr hwnd, UInt32 count)

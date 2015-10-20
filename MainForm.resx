@@ -125,7 +125,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADe
-        CAAAAk1TRnQBSQFMAgEBAgEAARwBAgEcAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        CAAAAk1TRnQBSQFMAgEBAgEAASQBAgEkAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAARADAAEBAQABCAYAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -307,6 +307,12 @@ Press 'Enter' to add URL.</value>
   </data>
   <data name="MaxConnections.ToolTipText" xml:space="preserve">
     <value>Set the max splits per task</value>
+  </data>
+  <data name="miShutdown.Size" type="System.Drawing.Size, System.Drawing">
+    <value>211, 22</value>
+  </data>
+  <data name="miShutdown.Text" xml:space="preserve">
+    <value>Shutdown when done</value>
   </data>
   <data name="miEditINI.Size" type="System.Drawing.Size, System.Drawing">
     <value>211, 22</value>
@@ -794,9 +800,6 @@ Press 'Enter' to add URL.</value>
         AADgDwAA/48AAA==
 </value>
   </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
   <data name="$this.Text" xml:space="preserve">
     <value>ParseGet</value>
   </data>
@@ -974,6 +977,12 @@ Press 'Enter' to add URL.</value>
   <data name="&gt;&gt;miSeparator0.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;miStayTop.Name" xml:space="preserve">
+    <value>miStayTop</value>
+  </data>
+  <data name="&gt;&gt;miStayTop.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;miLanguage.Name" xml:space="preserve">
     <value>miLanguage</value>
   </data>
@@ -1112,10 +1121,10 @@ Press 'Enter' to add URL.</value>
   <data name="&gt;&gt;colETA.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;miStayTop.Name" xml:space="preserve">
-    <value>miStayTop</value>
+  <data name="&gt;&gt;miShutdown.Name" xml:space="preserve">
+    <value>miShutdown</value>
   </data>
-  <data name="&gt;&gt;miStayTop.Type" xml:space="preserve">
+  <data name="&gt;&gt;miShutdown.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

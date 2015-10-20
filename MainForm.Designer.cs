@@ -60,6 +60,7 @@
             this.miCopyURL = new System.Windows.Forms.ToolStripMenuItem();
             this.miRunDownloader = new System.Windows.Forms.ToolStripMenuItem();
             this.miSeparator0 = new System.Windows.Forms.ToolStripSeparator();
+            this.miStayTop = new System.Windows.Forms.ToolStripMenuItem();
             this.miLanguage = new System.Windows.Forms.ToolStripMenuItem();
             this.miLangAuto = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -79,7 +80,6 @@
             this.miSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             this.OFD = new System.Windows.Forms.OpenFileDialog();
             this.MainSplit = new System.Windows.Forms.SplitContainer();
-            this.Memo = new System.Windows.Forms.RichTextBox();
             this.TaskList = new KK.ListViewEX();
             this.colURL = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -87,7 +87,8 @@
             this.colProgress = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSpeed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colETA = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.miStayTop = new System.Windows.Forms.ToolStripMenuItem();
+            this.Memo = new System.Windows.Forms.RichTextBox();
+            this.miShutdown = new System.Windows.Forms.ToolStripMenuItem();
             this.Toolbar.SuspendLayout();
             this.cmTaskList.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainSplit)).BeginInit();
@@ -203,6 +204,7 @@
             // 
             this.btnOption.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.btnOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miShutdown,
             this.miEditINI,
             this.miTrace,
             this.miLog,
@@ -320,6 +322,13 @@
             // 
             this.miSeparator0.Name = "miSeparator0";
             resources.ApplyResources(this.miSeparator0, "miSeparator0");
+            // 
+            // miStayTop
+            // 
+            this.miStayTop.CheckOnClick = true;
+            this.miStayTop.Name = "miStayTop";
+            resources.ApplyResources(this.miStayTop, "miStayTop");
+            this.miStayTop.CheckedChanged += new System.EventHandler(this.miStayTop_CheckedChanged);
             // 
             // miLanguage
             // 
@@ -453,15 +462,6 @@
             this.MainSplit.TabStop = false;
             this.MainSplit.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.MainSplit_SplitterMoved);
             // 
-            // Memo
-            // 
-            this.Memo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.Memo, "Memo");
-            this.Memo.Name = "Memo";
-            this.Memo.ReadOnly = true;
-            this.Memo.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.Memo_LinkClicked);
-            this.Memo.DoubleClick += new System.EventHandler(this.Memo_DoubleClick);
-            // 
             // TaskList
             // 
             this.TaskList.AllowColumnReorder = true;
@@ -514,12 +514,20 @@
             // 
             resources.ApplyResources(this.colETA, "colETA");
             // 
-            // miStayTop
+            // Memo
             // 
-            this.miStayTop.CheckOnClick = true;
-            this.miStayTop.Name = "miStayTop";
-            resources.ApplyResources(this.miStayTop, "miStayTop");
-            this.miStayTop.CheckedChanged += new System.EventHandler(this.miStayTop_CheckedChanged);
+            this.Memo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            resources.ApplyResources(this.Memo, "Memo");
+            this.Memo.Name = "Memo";
+            this.Memo.ReadOnly = true;
+            this.Memo.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.Memo_LinkClicked);
+            this.Memo.DoubleClick += new System.EventHandler(this.Memo_DoubleClick);
+            // 
+            // miShutdown
+            // 
+            this.miShutdown.CheckOnClick = true;
+            this.miShutdown.Name = "miShutdown";
+            resources.ApplyResources(this.miShutdown, "miShutdown");
             // 
             // MainForm
             // 
@@ -602,6 +610,7 @@
         private System.Windows.Forms.ToolStripMenuItem warn;
         private System.Windows.Forms.ToolStripMenuItem error;
         private System.Windows.Forms.ToolStripMenuItem miStayTop;
+        private System.Windows.Forms.ToolStripMenuItem miShutdown;
     }
 }
 
