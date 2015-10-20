@@ -71,33 +71,9 @@ namespace ParseGet
 
         private string id;
 
-        private void Downloader_DoWork(object sender, DoWorkEventArgs e)
+        private void Download_File(string url)
         {
-            string url = e.Argument as string;
             string param, s;
-
-            // Set Thread CultureInfo
-            Program.SetCultureInfo();
-
-            // Retrieving real download url ...
-            if (Parser.IsValidURL(url) > 0)
-            {
-                //ReportStatus(Resources.RetrieveURL);
-                if (!Parser.Parse(this, ref url, ref FileName))
-                {
-                    throw new Exception("Cann't retrieving a real URL");
-                }
-                else if (!url.StartsWith("http") || AppConfig.Settings.ParseOnly)
-                {
-                    e.Result = url;
-                    return;
-                }
-            }
-
-            if (!Directory.Exists(SavePath))
-            {
-                Directory.CreateDirectory(SavePath);
-            }
 
             if (string.IsNullOrEmpty(FileName))
             {
@@ -105,7 +81,6 @@ namespace ParseGet
             }
             else
             {
-                FileName = Util.ValidFileName(FileName);
                 param = string.Format("[\"{0}\"], {{\"dir\":\"{1}\", \"out\":\"{2}\"}}", url, SavePath.Replace("\\", "/"), FileName);
             }
 
@@ -134,7 +109,6 @@ namespace ParseGet
             } while (!CancellationPending && (s.Contains("status\":\"active") || s.Contains("status\":\"paused")));
 
             // end download
-            e.Cancel = CancellationPending;
             Aria2.Remove(id);
 
             if (ErrCode != 0)
@@ -149,6 +123,122 @@ namespace ParseGet
                 }
                 throw new Exception(s);
             }
+        }
+
+        private void Download_Playlist(string url)
+        {
+            string host = url.Remove(url.IndexOf("/", 7));
+            string[] ss = Web.HttpGet(url).Split('\n');
+            byte[] buffer = new byte[32768];
+            FileStream f = new FileStream(SavePath + "\\" + FileName, FileMode.OpenOrCreate);
+            long Downloaded = f.Length;
+
+            f.Seek(0, SeekOrigin.End);
+            ReportProgress(FILEINFO);
+
+            foreach (string s in ss)
+            {
+                int retrys = 3;
+
+                if (!s.StartsWith("/")) continue;
+
+            retry:
+                try
+                {
+                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(host + s);
+                    req.Proxy = Web.Proxy;
+                    HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+
+                    FileSize = Int32.Parse(res.Headers["Content-Length"]);
+                    if (Downloaded >= FileSize)
+                    {
+                        Downloaded -= FileSize;
+                        res.Close();
+                        continue;
+                    }
+                    Transfered = Downloaded;
+                    if (Transfered > 0)
+                    {
+                        Downloaded = 0;
+                        res.Close();
+                        req = (HttpWebRequest)WebRequest.Create(host + s);
+                        req.Proxy = Web.Proxy;
+                        req.AddRange(Transfered);
+                        res = (HttpWebResponse)req.GetResponse();
+                    }
+
+                    using (Stream rs = res.GetResponseStream())
+                    {
+                        int len = 0;
+                        long Last = 0;
+                        long LastTick = DateTime.Now.Ticks;
+
+                        while (!CancellationPending && (len = rs.Read(buffer, 0, buffer.Length)) != 0)
+                        {
+                            f.Write(buffer, 0, len);
+                            Transfered += len;
+
+                            long Tick = DateTime.Now.Ticks;
+                            double t = TimeSpan.FromTicks(Tick - LastTick).TotalSeconds;
+                            if (t > 1)
+                            {
+                                Speed = (int)((Transfered - Last) / t);
+                                Last = Transfered;
+                                LastTick = Tick;
+                                ReportProgress(PROGRESS, Transfered);
+                            }
+                        }
+                    }
+                    if (CancellationPending) break;
+                }
+                catch (Exception ex)
+                {
+                    if (Web.IsNeedRetry(ex) && retrys-- > 0) goto retry;
+                    f.Close();
+                    throw;
+                }
+            }
+            f.Close();
+        }
+
+        private void Downloader_DoWork(object sender, DoWorkEventArgs e)
+        {
+            string url = e.Argument as string;
+
+            // Set Thread CultureInfo
+            Program.SetCultureInfo();
+
+            // Retrieving real download url ...
+            if (Parser.IsValidURL(url) > 0)
+            {
+                //ReportStatus(Resources.RetrieveURL);
+                if (!Parser.Parse(this, ref url, ref FileName))
+                {
+                    throw new Exception("Cann't retrieving a real URL");
+                }
+                else if (!url.StartsWith("http") || AppConfig.Settings.ParseOnly)
+                {
+                    e.Result = url;
+                    return;
+                }
+            }
+
+            FileName = Util.ValidFileName(FileName);
+            if (!Directory.Exists(SavePath))
+            {
+                Directory.CreateDirectory(SavePath);
+            }
+
+            if (url.EndsWith(".m3u8")) /* playlist */
+            {
+                Download_Playlist(url);
+            }
+            else
+            {
+                Download_File(url);
+            }
+
+            e.Cancel = CancellationPending;
         }
     }
 }

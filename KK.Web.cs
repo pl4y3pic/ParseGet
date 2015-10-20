@@ -9,8 +9,8 @@ namespace KK
     internal abstract class Web
     {
         private const string ProxyAddr = "127.0.0.1:8087";
-        private static WebProxy Proxy;
-        private static CookieContainer CC = new CookieContainer();
+        public static WebProxy Proxy;
+        public static CookieContainer CC = new CookieContainer();
 
         public static bool UseProxy
         {
@@ -37,6 +37,25 @@ namespace KK
         public static WebHeaderCollection HttpHead(string url)
         {
             return (WebHeaderCollection)HttpRequest(url);
+        }
+
+        public static bool IsNeedRetry(Exception ex)
+        {
+            if (ex is WebException)
+            {
+                WebException wx = ex as WebException;
+                HttpStatusCode code = (wx.Response == null) ? HttpStatusCode.Unused : ((HttpWebResponse)wx.Response).StatusCode;
+                if (wx.Status == WebExceptionStatus.Timeout ||
+                    wx.Status == WebExceptionStatus.ReceiveFailure ||
+                    code == HttpStatusCode.BadGateway ||
+                    code == HttpStatusCode.ServiceUnavailable ||
+                    //code == HttpStatusCode.InternalServerError ||
+                    (code == HttpStatusCode.ProxyAuthenticationRequired && Credential.ProxyCredential(wx.Response) == Credential.CredUIReturnCodes.NO_ERROR)) // 代理服务器授权验证
+                {
+                    return true;
+                }
+            }
+            return (ex is IOException);
         }
 
         private static object HttpRequest(string url, object encoding = null)
@@ -74,24 +93,7 @@ namespace KK
             }
             catch (Exception ex)
             {
-                if (ex is WebException)
-                {
-                    WebException wx = ex as WebException;
-                    HttpStatusCode code = (wx.Response == null) ? HttpStatusCode.Unused : ((HttpWebResponse)wx.Response).StatusCode;
-                    if (wx.Status == WebExceptionStatus.Timeout ||
-                        wx.Status == WebExceptionStatus.ReceiveFailure ||
-                        code == HttpStatusCode.BadGateway ||
-                        code == HttpStatusCode.ServiceUnavailable ||
-                        //code == HttpStatusCode.InternalServerError ||
-                        (code == HttpStatusCode.ProxyAuthenticationRequired && Credential.ProxyCredential(wx.Response) == Credential.CredUIReturnCodes.NO_ERROR)) // 代理服务器授权验证
-                    {
-                        if (retrys-- > 0) goto retry;
-                    }
-                }
-                else if (ex is IOException)
-                {
-                    if (retrys-- > 0) goto retry;
-                }
+                if (IsNeedRetry(ex) && retrys-- > 0) goto retry;
                 throw;
             }
 
