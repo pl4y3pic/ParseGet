@@ -17,6 +17,7 @@ namespace ParseGet
         public const int NEWURL = -4;
 
         public object Tag;
+        public string Referer;
         public string SavePath;
         public string FileName;
         public long FileSize;
@@ -73,19 +74,12 @@ namespace ParseGet
 
         private void Download_File(string url)
         {
-            string param, s;
-
-            if (string.IsNullOrEmpty(FileName))
-            {
-                param = string.Format("[\"{0}\"], {{\"dir\":\"{1}\"}}", url, SavePath.Replace("\\", "/"));
-            }
-            else
-            {
-                param = string.Format("[\"{0}\"], {{\"dir\":\"{1}\", \"out\":\"{2}\"}}", url, SavePath.Replace("\\", "/"), FileName);
-            }
+            string r = string.IsNullOrEmpty(Referer) ? null : string.Format(", \"referer\":\"{0}\"", Referer);
+            string s = string.IsNullOrEmpty(FileName) ? null : string.Format(", \"out\":\"{0}\"", FileName);
 
             // add a new download task to aria2
-            id = Aria2.AddUri(param);
+            s = string.Format("[\"{0}\"], {{\"dir\":\"{1}\"{2}{3}}}", url, SavePath.Replace("\\", "/"), r, s);
+            id = Aria2.AddUri(s);
             if (string.IsNullOrEmpty(id))
             {
                 throw new Exception("addUri fail");
@@ -212,7 +206,7 @@ namespace ParseGet
             if (Parser.IsValidURL(url) > 0)
             {
                 //ReportStatus(Resources.RetrieveURL);
-                if (!Parser.Parse(this, ref url, ref FileName))
+                if (!Parser.Parse(this, ref url))
                 {
                     throw new Exception("Cann't retrieving a real URL");
                 }

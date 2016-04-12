@@ -49,7 +49,7 @@ namespace ParseGet
             return url;
         }
 
-        public static bool Parse(Downloader downloader, ref string url, ref string filename)
+        public static bool Parse(Downloader downloader, ref string url)
         {
             VarList vars = new VarList();
         reset:
@@ -153,7 +153,8 @@ namespace ParseGet
                 if (bExec)
                 {
                     url = vars["result"];
-                    filename = HttpUtility.HtmlDecode(vars["filename"]);
+                    downloader.FileName = HttpUtility.HtmlDecode(vars["filename"]);
+                    downloader.Referer = vars["referer"];
                     if (!string.IsNullOrEmpty(vars["dir"]))
                     {
                         downloader.SavePath += "\\" + vars["dir"];
