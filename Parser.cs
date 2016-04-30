@@ -152,9 +152,9 @@ namespace ParseGet
 
                 if (bExec)
                 {
+                    downloader.Referer = string.IsNullOrEmpty(vars["referer"]) ? url : vars["referer"];
                     url = vars["result"];
                     downloader.FileName = HttpUtility.HtmlDecode(vars["filename"]);
-                    downloader.Referer = vars["referer"];
                     if (!string.IsNullOrEmpty(vars["dir"]))
                     {
                         downloader.SavePath += "\\" + vars["dir"];
