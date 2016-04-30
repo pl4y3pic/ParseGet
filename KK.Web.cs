@@ -8,7 +8,7 @@ namespace KK
 {
     internal abstract class Web
     {
-        private const string ProxyAddr = "127.0.0.1:8087";
+        public static string ProxyAddr;
         public static WebProxy Proxy;
         public static CookieContainer CC = new CookieContainer();
 

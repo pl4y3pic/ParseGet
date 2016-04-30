@@ -67,13 +67,14 @@ namespace ParseGet
             {
                 FBD.SelectedPath = AppConfig.Settings.SavePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             }
+            Web.ProxyAddr = AppConfig.Settings.Proxy;
             OFD.FileName = AppConfig.Settings.ExternalDownloader;
             (miLanguage.DropDownItems[AppConfig.Settings.Language] as ToolStripMenuItem).Checked = true;
             (miParseOnly.DropDownItems[AppConfig.Settings.ExternalMethod] as ToolStripMenuItem).Checked = true;
             (miTrace.DropDownItems[AppConfig.Settings.LogLevel] as ToolStripMenuItem).Checked = true;
             miParseOnly.Checked = AppConfig.Settings.ParseOnly;
             Parser.Trace = miTrace.Checked = AppConfig.Settings.Trace;
-            Web.UseProxy = miProxy.Checked = AppConfig.Settings.Proxy;
+            Web.UseProxy = miProxy.Checked = AppConfig.Settings.UseProxy;
             MainSplit.Panel2Collapsed = !(miLog.Checked = AppConfig.Settings.Log) && !Parser.Trace;
             foreach (ToolStripMenuItem mi in miParseOnly.DropDownItems) mi.Visible = miParseOnly.Checked;
             foreach (ToolStripMenuItem mi in miTrace.DropDownItems) mi.Visible = miTrace.Checked;
@@ -786,7 +787,7 @@ namespace ParseGet
 
         private void miProxy_Click(object sender, EventArgs e)
         {
-            AppConfig.Settings.Proxy = miProxy.Checked = Web.UseProxy = !miProxy.Checked;
+            AppConfig.Settings.UseProxy = miProxy.Checked = Web.UseProxy = !miProxy.Checked;
         }
 
         private void miLog_Click(object sender, EventArgs e)

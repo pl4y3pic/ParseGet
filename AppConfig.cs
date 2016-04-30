@@ -15,10 +15,11 @@ namespace ParseGet
         public bool ParseOnly;
         public bool Clipboard;
         public bool Trace;
-        public bool Proxy;
+        public bool UseProxy;
         public bool Log;
         public string LogLevel;
         public string SavePath;
+        public string Proxy;
         public string ExternalDownloader;
         public StringCollection Tasks;
 
@@ -32,9 +33,10 @@ namespace ParseGet
             settings.ParseOnly = false;
             settings.Clipboard = true;
             settings.Trace = false;
-            settings.Proxy = true;
+            settings.UseProxy = true;
             settings.Log = true;
             settings.LogLevel = "debug";
+            settings.Proxy = "127.0.0.1:8787";
             settings.SavePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             settings.ExternalDownloader = null;
             settings.Tasks = new StringCollection();
