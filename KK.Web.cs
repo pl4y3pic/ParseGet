@@ -2,11 +2,10 @@
 using System.IO;
 using System.Net;
 using System.Text;
-using System.Web;
 
 namespace KK
 {
-    internal abstract class Web
+    abstract class Web
     {
         public static string ProxyAddr;
         public static WebProxy Proxy;
@@ -41,9 +40,10 @@ namespace KK
 
         public static bool IsNeedRetry(Exception ex)
         {
-            if (ex is WebException)
+			var webException = ex as WebException;
+            if (webException != null)
             {
-                WebException wx = ex as WebException;
+                var wx = webException;
                 HttpStatusCode code = (wx.Response == null) ? HttpStatusCode.Unused : ((HttpWebResponse)wx.Response).StatusCode;
                 if (wx.Status == WebExceptionStatus.Timeout ||
                     wx.Status == WebExceptionStatus.ReceiveFailure ||
@@ -58,7 +58,7 @@ namespace KK
             return (ex is IOException);
         }
 
-        private static object HttpRequest(string url, object encoding = null)
+        static object HttpRequest(string url, object encoding = null)
         {
             object result = null;
             int retrys = 3;
@@ -66,7 +66,7 @@ namespace KK
         retry:
             try
             {
-                HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+                var req = (HttpWebRequest)WebRequest.Create(url);
                 req.Proxy = Proxy;
                 req.CookieContainer = CC;
                 req.AutomaticDecompression = DecompressionMethods.GZip;
@@ -75,7 +75,7 @@ namespace KK
                 //req.KeepAlive = true;
                 //req.UserAgent = "Safari/537.36";
 
-                HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+                var res = (HttpWebResponse)req.GetResponse();
                 if (encoding == null)
                 {
                     result = res.Headers;
@@ -83,7 +83,7 @@ namespace KK
                 else
                 {
                     string s;
-                    using (StreamReader reader = new StreamReader(res.GetResponseStream(), (Encoding)encoding))
+                    using (var reader = new StreamReader(res.GetResponseStream(), (Encoding)encoding))
                     {
                         s = reader.ReadToEnd();
                     }

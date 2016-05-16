@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace ParseGet
 {
-    internal static class Program
+    static class Program
     {
         public static bool IsClosing;
 
@@ -14,7 +14,7 @@ namespace ParseGet
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main(string[] args)
+        static void Main(string[] args)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace ParseGet
             }
         }
 
-        private static string[] Languages =
+        static readonly string[] Languages =
         {
             "zh-CHS",
             "en"
@@ -54,14 +54,9 @@ namespace ParseGet
         public static void SetCultureInfo()
         {
             int i = AppConfig.Settings.Language;
-            if (i < 2) // Auto detect
-            {
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.CurrentCulture;
-            }
-            else
-            {
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(Languages[i - 2]);
-            }
+            Thread.CurrentThread.CurrentUICulture = (i < 2) ? // Auto detect
+            	CultureInfo.CurrentCulture :
+            	CultureInfo.GetCultureInfo(Languages[i - 2]);
         }
     }
 }

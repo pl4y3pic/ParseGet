@@ -32,10 +32,10 @@ namespace KK
     }
 
     //Based on Rob Jarett's wrappers for the desktop integration PDC demos.
-    [ComImportAttribute()]
+    [ComImportAttribute]
     [GuidAttribute("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
     [InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
-    internal interface ITaskbarList3
+    interface ITaskbarList3
     {
         // ITaskbarList
         [PreserveSig]
@@ -64,15 +64,15 @@ namespace KK
 
     [GuidAttribute("56FDF344-FD6D-11d0-958A-006097C9A090")]
     [ClassInterfaceAttribute(ClassInterfaceType.None)]
-    [ComImportAttribute()]
-    internal class CTaskbarList { }
+    [ComImportAttribute]
+    class CTaskbarList { }
 
     /// <summary>
     /// The primary coordinator of the Windows 7 taskbar-related activities.
     /// </summary>
     public static class Taskbar
     {
-        private static ITaskbarList3 _taskbarList;
+        static ITaskbarList3 _taskbarList;
         internal static ITaskbarList3 TaskbarList
         {
             get
@@ -92,7 +92,7 @@ namespace KK
             }
         }
 
-        private static readonly OperatingSystem osInfo = Environment.OSVersion;
+        static readonly OperatingSystem osInfo = Environment.OSVersion;
         internal static bool Windows7OrGreater
         {
             get
@@ -106,7 +106,6 @@ namespace KK
         /// Sets the progress state of the specified window's
         /// taskbar button.
         /// </summary>
-        /// <param name="hwnd">The window handle.</param>
         /// <param name="state">The progress state.</param>
         public static void SetProgressState(TaskbarState state)
         {
@@ -118,7 +117,6 @@ namespace KK
         /// Sets the progress value of the specified window's
         /// taskbar button.
         /// </summary>
-        /// <param name="hwnd">The window handle.</param>
         /// <param name="current">The current value.</param>
         /// <param name="maximum">The maximum value.</param>
         public static void SetProgressValue(long current, long maximum)

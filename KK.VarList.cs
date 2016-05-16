@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace KK
 {
-    internal class VarList : SortedDictionary<string, string>
+    class VarList : SortedDictionary<string, string>
     {
         public new string this[string name]
         {

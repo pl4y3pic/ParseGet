@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace ParseGet
 {
-    internal static class Parser
+    static class Parser
     {
         public static string ScriptFile = Application.StartupPath + "\\parser.ini";
         public static bool Trace;
@@ -20,11 +20,11 @@ namespace ParseGet
         {
             foreach (string s in File.ReadAllLines(ScriptFile))
             {
-                if (s.StartsWith("^") || s.StartsWith("http"))
+                if (s.StartsWith("^", StringComparison.Ordinal) || s.StartsWith("http", StringComparison.Ordinal))
                 {
                     if (Regex.IsMatch(url, s, RegexOptions.IgnoreCase))
                     {
-                        return (s.StartsWith("^") ? 1 : 2);
+                        return (s.StartsWith("^", StringComparison.Ordinal) ? 1 : 2);
                     }
                 }
             }
@@ -38,7 +38,7 @@ namespace ParseGet
             foreach (string s in File.ReadAllLines(ScriptFile))
             {
                 if (string.IsNullOrEmpty(s)) break;
-                int i = s.IndexOf(" = ");
+                int i = s.IndexOf(" = ", StringComparison.Ordinal);
                 Match m = Regex.Match(filename, s.Substring(0, i));
                 if (m.Success)
                 {
@@ -51,7 +51,7 @@ namespace ParseGet
 
         public static bool Parse(Downloader downloader, ref string url)
         {
-            VarList vars = new VarList();
+            var vars = new VarList();
         reset:
             int retrys = 3;
         retry:
@@ -69,82 +69,63 @@ namespace ParseGet
                 {
                     s = script = ss.TrimStart();
                     line++; // line number
-                    if (bExec)
-                    {
-                        if (string.IsNullOrEmpty(s))
-                        {
-                            break; // Blank line, End
-                        }
-                        if (s.StartsWith("^"))
-                        {
-                            continue; // fall through
-                        }
+                    if (bExec) {
+						if (string.IsNullOrEmpty(s)) {
+							break; // Blank line, End
+						}
+						if (s.StartsWith("^", StringComparison.Ordinal)) {
+							continue; // fall through
+						}
 
-                        i = s.IndexOf('=');
-                        name = s.Substring(0, i).TrimEnd();
-                        s = s.Substring(i + 1);
-                        vars[name] = Evaluate(ref s, vars);
-                        if (Trace)
-                        {
-                            downloader.ReportStatus(string.Format("[{0}] {1} = {2}\r\n", line, name, vars[name]));
-                        }
+						i = s.IndexOf('=');
+						name = s.Substring(0, i).TrimEnd();
+						s = s.Substring(i + 1);
+						vars[name] = Evaluate(ref s, vars);
+						if (Trace) {
+							downloader.ReportStatus(string.Format("[{0}] {1} = {2}\r\n", line, name, vars[name]));
+						}
 
-                        if (name == "result")
-                        {
-                            break;
-                        }
-                        else if (name == "test") // check result
-                        {
-                            WebHeaderCollection headers = Web.HttpHead(vars["test"]);
-                            if (headers != null)
-                            {
-                                vars["result"] = vars["test"];
-                                break; // Got a valid result, End
-                            }
-                        }
-                        else if (name == "url") // url changed
-                        {
-                            url = vars["url"];
-                            downloader.ReportProgress(Downloader.CHANGEURL, url);
-                            vars.Clear();
-                            goto reset;
-                        }
-                        else if (name == "regexp") // find match links
-                        {
-                            MatchCollection m = Regex.Matches(Web.HttpGet(url), vars[name]);
-                            if (m.Count > 0)
-                            {
-                                i = 0;
-                                while (i < m.Count)
-                                {
-                                    s = Util.GetSubStr(m[i++].Value, "\"", "\"");
-                                    if (s.StartsWith("//"))
-                                    {
+						if (name == "result") {
+							break;
+						}
+						if (name == "test") { // check result
+							WebHeaderCollection headers = Web.HttpHead(vars["test"]);
+							if (headers != null) {
+								vars["result"] = vars["test"];
+								break; // Got a valid result, End
+							}
+						} else if (name == "url") { // url changed
+							url = vars["url"];
+							downloader.ReportProgress(Downloader.CHANGEURL, url);
+							vars.Clear();
+							goto reset;
+						} else if (name == "regexp") { // find match links
+							MatchCollection m = Regex.Matches(Web.HttpGet(url), vars[name]);
+							if (m.Count > 0) {
+								i = 0;
+								while (i < m.Count) {
+									s = Util.GetSubStr(m[i++].Value, "\"", "\"");
+									if (s.StartsWith("//", StringComparison.Ordinal)) {
 #if false
                                         s = Regex.Match(url, "https?:").Value + s;
 #else
-                                        continue; // skip
+										continue; // skip
 #endif
-                                    }
-                                    else if (s.StartsWith("/"))
-                                    {
-                                        s = Regex.Match(url, "https?://[^/]+/").Value + s.Remove(0, 1);
-                                    }
-                                    else
-                                    {
-                                        s = url.Remove(url.LastIndexOf("/") + 1) + s;
-                                    }
-                                    downloader.ReportProgress(Downloader.NEWURL, s);
-                                }
-                            }
-                            break;
-                        }
-                        else if (name == "rs" && !vars["rs"].Contains("http")) // no result
-                        {
-                            break; // End
-                        }
-                    }
-                    else if (s.StartsWith("^") || s.StartsWith("http"))
+									}
+									if (s.StartsWith("/", StringComparison.Ordinal)) {
+										s = Regex.Match(url, "https?://[^/]+/").Value + s.Remove(0, 1);
+									} else {
+										s = url.Remove(url.LastIndexOf("/", StringComparison.Ordinal) + 1) + s;
+									}
+									downloader.ReportProgress(Downloader.NEWURL, s);
+								}
+							}
+							break;
+						} else if (name == "rs" && !vars["rs"].Contains("http")) { // no result
+							break; // End
+						}
+					}
+                    else if (s.StartsWith("^", StringComparison.Ordinal) || s.StartsWith("http", StringComparison.Ordinal))
                     {
                         bExec = Regex.IsMatch(url, s, RegexOptions.IgnoreCase);
                     }
@@ -178,7 +159,7 @@ namespace ParseGet
             return true;
         }
 
-        private enum TokenType
+        enum TokenType
         {
             Unkown = 0,
             Const,
@@ -186,9 +167,9 @@ namespace ParseGet
             Function
         }
 
-        private static char[] WhiteChars = new char[] { ' ', '\t', ',' };
+        static char[] WhiteChars = { ' ', '\t', ',' };
 
-        private static int Match(string s, int i, char start, char end)
+        static int Match(string s, int i, char start, char end)
         {
             int level = 0;
             while (i < s.Length)
@@ -215,7 +196,7 @@ namespace ParseGet
             return i;
         }
 
-        private static int ParseStr(string s, int i)
+        static int ParseStr(string s, int i)
         {
             do
             {
@@ -230,7 +211,7 @@ namespace ParseGet
             return i;
         }
 
-        private static string GetToken(ref string s, out TokenType type)
+        static string GetToken(ref string s, out TokenType type)
         {
             string result = null;
             int i = 0;
@@ -281,7 +262,7 @@ namespace ParseGet
             return result;
         }
 
-        private static string Evaluate(ref string s, VarList vars)
+        static string Evaluate(ref string s, VarList vars)
         {
             TokenType type;
             //string ss = s;
@@ -308,7 +289,7 @@ namespace ParseGet
 
         private delegate string ParserFunc(string s, VarList vars);
 
-        private static SortedList<string, ParserFunc> funcs = new SortedList<string, ParserFunc>
+        static SortedList<string, ParserFunc> funcs = new SortedList<string, ParserFunc>
         {
             {"decode",  _decode},
             {"encode",  _encode},
@@ -320,7 +301,7 @@ namespace ParseGet
             {"get",     _get},
         };
 
-        private static string CallFunction(string s, VarList vars)
+        static string CallFunction(string s, VarList vars)
         {
             int i = s.IndexOf('(');
             string fname = s.Remove(i).Trim();
@@ -333,20 +314,13 @@ namespace ParseGet
             throw new Exception("[Script] Unkown function: " + fname);
         }
 
-        private static string _get(string s, VarList vars)
-        {
-            string url = Evaluate(ref s, vars);
-            if (string.IsNullOrEmpty(s))
-            {
-                return Web.HttpGet(url);
-            }
-            else
-            {
-                return Web.HttpGet(url, Encoding.GetEncoding(Evaluate(ref s, vars)));
-            }
-        }
+        static string _get(string s, VarList vars)
+		{
+			string url = Evaluate(ref s, vars);
+			return string.IsNullOrEmpty(s) ? Web.HttpGet(url) : Web.HttpGet(url, Encoding.GetEncoding(Evaluate(ref s, vars)));
+		}
 
-        private static string _prefer(string s, VarList vars)
+        static string _prefer(string s, VarList vars)
         {
             string ss = Evaluate(ref s, vars);
             string start, end;
@@ -361,10 +335,10 @@ namespace ParseGet
             i = 0;
             j = 0;
             n = 0;
-            while (ss.IndexOf(start, i) >= 0)
+            while (ss.IndexOf(start, i, StringComparison.Ordinal) >= 0)
             {
-                i = ss.IndexOf(start, i) + start.Length;
-                j = ss.IndexOf(end, i);
+                i = ss.IndexOf(start, i, StringComparison.Ordinal) + start.Length;
+				j = ss.IndexOf(end, i, StringComparison.Ordinal);
                 Int32.TryParse(ss.Substring(i, j - i), out j);
                 if (j > max)
                 {
@@ -378,18 +352,18 @@ namespace ParseGet
             // pick the prefer item
             start = Evaluate(ref s, vars);
             end = Evaluate(ref s, vars);
-            not_http = !start.StartsWith("http");
+            not_http = !start.StartsWith("http", StringComparison.Ordinal);
             i = 0;
             j = 0;
             n = 0;
-            while (ss.IndexOf(start, i) >= 0)
+            while (ss.IndexOf(start, i, StringComparison.Ordinal) >= 0)
             {
-                i = ss.IndexOf(start, j);
+				i = ss.IndexOf(start, j, StringComparison.Ordinal);
                 if (not_http)
                 {
                     i += start.Length;
                 }
-                j = ss.IndexOf(end, i);
+				j = ss.IndexOf(end, i, StringComparison.Ordinal);
                 if (n == max_n)
                 {
                     break;
@@ -400,10 +374,10 @@ namespace ParseGet
             return ss.Substring(i, j - i);
         }
 
-        private static string _format(string s, VarList vars)
+        static string _format(string s, VarList vars)
         {
             string format = Evaluate(ref s, vars);
-            ArrayList args = new ArrayList();
+            var args = new ArrayList();
             while (!string.IsNullOrEmpty(s))
             {
                 args.Add(Evaluate(ref s, vars));
@@ -411,29 +385,29 @@ namespace ParseGet
             return string.Format(format, args.ToArray());
         }
 
-        private static string _substr(string s, VarList vars)
+        static string _substr(string s, VarList vars)
         {
             return __substr(s, vars, true);
         }
 
-        private static string _lsubstr(string s, VarList vars)
+        static string _lsubstr(string s, VarList vars)
         {
             return __substr(s, vars, false);
         }
 
-        private static string __substr(string s, VarList vars, bool substr)
+        static string __substr(string s, VarList vars, bool substr)
         {
             string ss = Evaluate(ref s, vars);
             string start = Evaluate(ref s, vars);
             int i;
             if (!Int32.TryParse(start, out i))
             {
-                i = substr ? ss.IndexOf(start) : ss.LastIndexOf(start);
+                i = substr ? ss.IndexOf(start, StringComparison.Ordinal) : ss.LastIndexOf(start, StringComparison.Ordinal);
                 if (i < 0)
                 {
                     return null;
                 }
-                if (!start.StartsWith("http"))
+                if (!start.StartsWith("http", StringComparison.Ordinal))
                 {
                     i += start.Length;
                 }
@@ -446,7 +420,7 @@ namespace ParseGet
                 {
                     return ss.Substring(i, j);
                 }
-                j = ss.IndexOf(end, i);
+				j = ss.IndexOf(end, i, StringComparison.Ordinal);
                 if (j >= 0)
                 {
                     return ss.Substring(i, j - i);
@@ -455,22 +429,18 @@ namespace ParseGet
             return ss.Substring(i);
         }
 
-        private static string _decode(string s, VarList vars)
+        static string _decode(string s, VarList vars)
         {
             string ss = Evaluate(ref s, vars);
-            if (!string.IsNullOrEmpty(s))
-            {
-                return HttpUtility.UrlDecode(ss, Encoding.GetEncoding(Evaluate(ref s, vars)));
-            }
-            return Util.Decode(ss);
+			return !string.IsNullOrEmpty(s) ? HttpUtility.UrlDecode(ss, Encoding.GetEncoding(Evaluate(ref s, vars))) : Util.Decode(ss);
         }
 
-        private static string _encode(string s, VarList vars)
+        static string _encode(string s, VarList vars)
         {
             return HttpUtility.UrlEncode(Evaluate(ref s, vars));
         }
 
-        private static string _replace(string s, VarList vars)
+        static string _replace(string s, VarList vars)
         {
             return Evaluate(ref s, vars).Replace(Evaluate(ref s, vars), Evaluate(ref s, vars));
         }

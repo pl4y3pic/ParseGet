@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace ParseGet
 {
-    internal abstract class ShooterDownloader
+    abstract class ShooterDownloader
     {
         //ShooterNet
         public static void Start(string filePath)
@@ -15,7 +15,7 @@ namespace ParseGet
             string fileHash = Util.CaculateFileHash(filePath);
             string fileName = Path.GetFileName(filePath);
 
-            FormData formData = new FormData();
+            var formData = new FormData();
             formData.Boundary = "----------------------------767a02e50d82";
             formData.AddData("pathinfo", fileName);
             formData.AddData("filehash", fileHash);
@@ -23,7 +23,7 @@ namespace ParseGet
             string formDataString = formData.ToString();
 
             byte[] formDataUtf8 = Encoding.UTF8.GetBytes(formDataString);
-            HttpWebRequest request = WebRequest.Create("http://svplayer.shooter.cn/api/subapi.php") as HttpWebRequest;
+            var request = WebRequest.Create("http://svplayer.shooter.cn/api/subapi.php") as HttpWebRequest;
             request.Method = "POST";
             request.UserAgent = "SPlayer Build 580";
             request.ContentType = "multipart/form-data; boundary=----------------------------767a02e50d82";
@@ -65,7 +65,7 @@ namespace ParseGet
                     if (response.StatusCode == HttpStatusCode.OK)
                     {
                         responseStream = response.GetResponseStream();
-                        byte[] buffer = new byte[1024];
+                        var buffer = new byte[1024];
                         int len = 0;
                         outputStream = new FileStream(tempFilePath, FileMode.OpenOrCreate);
                         while ((len = responseStream.Read(buffer, 0, buffer.Length)) != 0)
@@ -97,7 +97,7 @@ namespace ParseGet
             if (bRespOk)
             {
                 //Extract subtitle
-                ShooterSubExtractor extractor = new ShooterSubExtractor();
+                var extractor = new ShooterSubExtractor();
                 extractor.VideoFilePath = filePath;
                 extractor.DumpFilePath = tempFilePath;
                 if (extractor.ExtractSubtitles() != ShooterSubExtractor.SubExtractResult.OK)

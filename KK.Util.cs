@@ -17,7 +17,7 @@ namespace KK
         BigEndian
     }
 
-    internal abstract class Util
+    abstract class Util
     {
         [Flags]
         internal enum ExecutionFlag : uint
@@ -115,7 +115,7 @@ namespace KK
             // flash this window in task bar once every 1 second
             if (NativeMethods.GetForegroundWindow() != hwnd)
             {
-                NativeMethods.FLASHWINFO fInfo = new NativeMethods.FLASHWINFO();
+                var fInfo = new NativeMethods.FLASHWINFO();
 
                 fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
                 fInfo.hwnd = hwnd;
@@ -161,8 +161,8 @@ namespace KK
             return filename;
         }
 
-        private const double KB = 1024.0F;
-        private const double MB = 1024.0F * 1024.0F;
+        const double KB = 1024.0F;
+        const double MB = 1024.0F * 1024.0F;
 
         public static string ToSpeed(double speed)
         {
@@ -178,7 +178,7 @@ namespace KK
             {
                 return (speed / KB).ToString("F01") + " KB/s";
             }
-            return speed.ToString() + " B/s";
+            return speed + " B/s";
         }
 
         public static string ToSize(long size)
@@ -187,7 +187,7 @@ namespace KK
 
             if (size > 104857600)       // 100 MB
             {
-                s = (size / 1048576).ToString() + " MB";
+                s = (size / 1048576) + " MB";
             }
             else if (size > 10485760)   // 10 MB
             {
@@ -199,7 +199,7 @@ namespace KK
             }
             else if (size > 1024)       // 1 KB
             {
-                s = (size / 1024).ToString() + " KB";
+                s = (size / 1024) + " KB";
             }
             else
             {
@@ -211,12 +211,12 @@ namespace KK
 
         public static string GetSubStr(string s, string start)
         {
-            int i = s.IndexOf(start);
+            int i = s.IndexOf(start, StringComparison.Ordinal);
             if (i < 0)
             {
                 return null;
             }
-            if (!start.StartsWith("http"))
+            if (!start.StartsWith("http", StringComparison.Ordinal))
             {
                 i += start.Length;
             }
@@ -225,22 +225,18 @@ namespace KK
 
         public static string GetSubStr(string s, string start, object end)
         {
-            int i = s.IndexOf(start);
+            int i = s.IndexOf(start, StringComparison.Ordinal);
             if (i < 0)
             {
                 return null;
             }
-            if (!start.StartsWith("http"))
+            if (!start.StartsWith("http", StringComparison.Ordinal))
             {
                 i += start.Length;
             }
 
-            int j = s.IndexOf(end.ToString(), i);
-            if (j < 0)
-            {
-                return s.Substring(i);
-            }
-            return s.Substring(i, j - i);
+            int j = s.IndexOf(end.ToString(), i, StringComparison.Ordinal);
+			return j < 0 ? s.Substring(i) : s.Substring(i, j - i);
         }
 
         public static string Base64Decode(string s)
@@ -260,7 +256,7 @@ namespace KK
                     break;
             }
             byte[] bb = Convert.FromBase64String(s);
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             foreach (byte b in bb)
             {
                 sb.Append(Convert.ToChar(b));
@@ -271,7 +267,7 @@ namespace KK
 
         public static string Decode(string s)
         {
-            int i = s.IndexOf("\\u");
+            int i = s.IndexOf("\\u", StringComparison.Ordinal);
             if (i < 0)
             {
                 if (s.Contains("&amp;"))
@@ -279,21 +275,20 @@ namespace KK
                     return HttpUtility.HtmlDecode(s);
                 }
 
-                if (s.StartsWith("http"))
-                {
-                    s = s.Replace("\\/", "/");
-                }
+				if (s.StartsWith("http", StringComparison.Ordinal)) {
+					s = s.Replace("\\/", "/");
+				}
                 return HttpUtility.UrlDecode(s);
             }
 
             int j = 0;
-            StringBuilder ss = new StringBuilder();
+            var ss = new StringBuilder();
             do
             {
                 ss.Append(s.Substring(j, i - j));
                 ss.Append(Convert.ToChar(Convert.ToInt32(s.Substring(i + 2, 4), 16)));
                 j = i + 6;
-                i = s.IndexOf("\\u", j);
+				i = s.IndexOf("\\u", j, StringComparison.Ordinal);
             } while (i >= 0);
 
             if (j < s.Length)
@@ -307,9 +302,9 @@ namespace KK
         public static string CaculateFileHash(string filePath)
         {
             string hashString = "";
-            FileStream file = new FileStream(filePath, FileMode.Open, FileAccess.Read);
+            var file = new FileStream(filePath, FileMode.Open, FileAccess.Read);
             long fileLength = file.Length;
-            long[] offset = new long[4];
+            var offset = new long[4];
             if (fileLength < 8192)
             {
                 //a video file less then 8k? impossible! <-- says SPlayer
@@ -327,8 +322,8 @@ namespace KK
 
                 MD5 md5 = new MD5CryptoServiceProvider();
 
-                BinaryReader reader = new BinaryReader(file);
-                StringBuilder sb = new StringBuilder();
+                var reader = new BinaryReader(file);
+                var sb = new StringBuilder();
                 for (int i = 0; i < NumOfSegments; i++)
                 {
                     file.Seek(offset[i], SeekOrigin.Begin);
@@ -375,7 +370,7 @@ namespace KK
                 decompressStream = new GZipStream(inStream, CompressionMode.Decompress);
                 outStream = new FileStream(outFile, FileMode.OpenOrCreate);
 
-                byte[] buffer = new byte[4096];
+                var buffer = new byte[4096];
                 int accuRead = 0;
                 while ((accuRead = decompressStream.Read(buffer, 0, buffer.Length)) > 0)
                 {
@@ -383,6 +378,7 @@ namespace KK
                 }
                 ret = true;
             }
+            // disable once EmptyGeneralCatchClause
             catch
             {
             }
@@ -406,7 +402,7 @@ namespace KK
 
         public static void RunProc(string filePath, string args, bool needElevation)
         {
-            ProcessStartInfo procInfo = new ProcessStartInfo();
+            var procInfo = new ProcessStartInfo();
             procInfo.UseShellExecute = true;
             procInfo.FileName = filePath;
             procInfo.Arguments = args;
@@ -464,13 +460,13 @@ namespace KK
             get
             {
                 WindowsIdentity id = WindowsIdentity.GetCurrent();
-                WindowsPrincipal p = new WindowsPrincipal(id);
+                var p = new WindowsPrincipal(id);
                 return p.IsInRole(WindowsBuiltInRole.Administrator);
             }
         }
 
-        private const int BCM_FIRST = 0x1600;
-        private const int BCM_SETSHIELD = (BCM_FIRST + 0x000C);
+        const int BCM_FIRST = 0x1600;
+        const int BCM_SETSHIELD = (BCM_FIRST + 0x000C);
 
         //Add a shield ICON to the button to inform user privilege elevation is required.
         // Only work on Vista or above.
@@ -511,7 +507,7 @@ namespace KK
                     //Check if application is running in WOW64 mode.
                     // IsWow64Process only works on Windows XP sp2 or above.
                     //  Dynamically invoke it to avoid unnecessary dependency.
-                    IsWow64Process dlg = (IsWow64Process)Marshal.GetDelegateForFunctionPointer(addr, typeof(IsWow64Process));
+                    var dlg = (IsWow64Process)Marshal.GetDelegateForFunctionPointer(addr, typeof(IsWow64Process));
                     bool retval;
                     dlg.Invoke(Process.GetCurrentProcess().Handle, out retval);
 

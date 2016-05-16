@@ -20,13 +20,12 @@ namespace ParseGet.Properties {
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute]
+    class Resources {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        static global::System.Resources.ResourceManager resourceMan;
         
-        private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
@@ -39,33 +38,29 @@ namespace ParseGet.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("ParseGet.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("ParseGet.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
         
-        /// <summary>
-        ///   Overrides the current thread's CurrentUICulture property for all
-        ///   resource lookups using this strongly typed resource class.
-        /// </summary>
-        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
-            get {
-                return resourceCulture;
-            }
-            set {
-                resourceCulture = value;
-            }
-        }
+		/// <summary>
+		///   Overrides the current thread's CurrentUICulture property for all
+		///   resource lookups using this strongly typed resource class.
+		/// </summary>
+		[global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+		internal static global::System.Globalization.CultureInfo Culture {
+			get;
+			set;
+		}
         
         /// <summary>
         ///   Looks up a localized string similar to Downloading Cancelled..
         /// </summary>
         internal static string DownloadCancelled {
             get {
-                return ResourceManager.GetString("DownloadCancelled", resourceCulture);
+                return ResourceManager.GetString("DownloadCancelled", Culture);
             }
         }
         
@@ -74,7 +69,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string DownloadCompleted {
             get {
-                return ResourceManager.GetString("DownloadCompleted", resourceCulture);
+                return ResourceManager.GetString("DownloadCompleted", Culture);
             }
         }
         
@@ -83,7 +78,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string DownloadData {
             get {
-                return ResourceManager.GetString("DownloadData", resourceCulture);
+                return ResourceManager.GetString("DownloadData", Culture);
             }
         }
         
@@ -92,7 +87,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string DownloadPartialData {
             get {
-                return ResourceManager.GetString("DownloadPartialData", resourceCulture);
+                return ResourceManager.GetString("DownloadPartialData", Culture);
             }
         }
         
@@ -101,7 +96,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string Error {
             get {
-                return ResourceManager.GetString("Error", resourceCulture);
+                return ResourceManager.GetString("Error", Culture);
             }
         }
         
@@ -110,7 +105,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string ErrorInvalidURL {
             get {
-                return ResourceManager.GetString("ErrorInvalidURL", resourceCulture);
+                return ResourceManager.GetString("ErrorInvalidURL", Culture);
             }
         }
         
@@ -119,7 +114,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string ErrorSameURL {
             get {
-                return ResourceManager.GetString("ErrorSameURL", resourceCulture);
+                return ResourceManager.GetString("ErrorSameURL", Culture);
             }
         }
         
@@ -128,7 +123,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string InputFM5K {
             get {
-                return ResourceManager.GetString("InputFM5K", resourceCulture);
+                return ResourceManager.GetString("InputFM5K", Culture);
             }
         }
         
@@ -137,7 +132,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string InputFTN5K {
             get {
-                return ResourceManager.GetString("InputFTN5K", resourceCulture);
+                return ResourceManager.GetString("InputFTN5K", Culture);
             }
         }
         
@@ -146,7 +141,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string Logging {
             get {
-                return ResourceManager.GetString("Logging", resourceCulture);
+                return ResourceManager.GetString("Logging", Culture);
             }
         }
         
@@ -155,7 +150,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string NewTask {
             get {
-                return ResourceManager.GetString("NewTask", resourceCulture);
+                return ResourceManager.GetString("NewTask", Culture);
             }
         }
         
@@ -164,7 +159,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string RetrieveURL {
             get {
-                return ResourceManager.GetString("RetrieveURL", resourceCulture);
+                return ResourceManager.GetString("RetrieveURL", Culture);
             }
         }
         
@@ -173,7 +168,7 @@ namespace ParseGet.Properties {
         /// </summary>
         internal static string VerifyAge {
             get {
-                return ResourceManager.GetString("VerifyAge", resourceCulture);
+                return ResourceManager.GetString("VerifyAge", Culture);
             }
         }
     }

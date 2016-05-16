@@ -25,7 +25,7 @@ namespace ParseGet
 
         public static AppSettings Default()
         {
-            AppSettings settings = new AppSettings();
+            var settings = new AppSettings();
             settings.MaxDownloaders = 2;
             settings.MaxConnections = 1;
             settings.Language = 0;
@@ -44,7 +44,7 @@ namespace ParseGet
             return settings;
         }
 
-        private AppSettings()
+        AppSettings()
         {
         }
     }
@@ -53,7 +53,7 @@ namespace ParseGet
     {
         public static AppSettings Settings;
 
-        private static XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
+        static readonly XmlSerializer serializer = new XmlSerializer(typeof(AppSettings));
 
         public static void Load()
         {
@@ -65,6 +65,7 @@ namespace ParseGet
                     Settings = (AppSettings)serializer.Deserialize(r);
                 }
             }
+            // disable once EmptyGeneralCatchClause
             catch { }
             finally
             {
