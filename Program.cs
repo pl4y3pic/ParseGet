@@ -23,9 +23,21 @@ namespace ParseGet
 
                 if (args.Length > 0)
                 {
-                    foreach (string s in args)
+                    string s = args[0];
+                    if (s == "/sub")
                     {
-                        ShooterDownloader.Start(s);
+                        for (int i = 1; i < args.Length; i++)
+                        {
+                            ShooterDownloader.Start(args[i]);
+                        }
+                    }
+                    else if (s == "/zero")
+                    {
+                        for (int i = 1; i < args.Length; i++)
+                        {
+                            KK.Util.PaddingZero(args[i]);
+                        }
+                        //MessageBox.Show("All done!");
                     }
                 }
                 else

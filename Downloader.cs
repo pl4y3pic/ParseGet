@@ -27,6 +27,7 @@ namespace ParseGet
 
         private static SortedList<int, string> ErrMsgs = new SortedList<int, string>
         {
+        	{1, "connection closed"},
             {2, "time out"},
             {3, "resource not found"},
             {5, "speed too low, aborted"},
@@ -76,10 +77,12 @@ namespace ParseGet
         {
             string r = string.IsNullOrEmpty(Referer) ? null : string.Format(", \"referer\":\"{0}\"", Referer);
             string s = string.IsNullOrEmpty(FileName) ? null : string.Format(", \"out\":\"{0}\"", FileName);
+            string t = string.Format("[\"{0}\"], {{\"dir\":\"{1}\"{2}{3}}}", url, SavePath.Replace("\\", "/"), r, s);
+            int retrys = url.Contains("pornhub") ? -1 : 3;
 
+        retry:
             // add a new download task to aria2
-            s = string.Format("[\"{0}\"], {{\"dir\":\"{1}\"{2}{3}}}", url, SavePath.Replace("\\", "/"), r, s);
-            id = Aria2.AddUri(s);
+            id = Aria2.AddUri(t);
             if (string.IsNullOrEmpty(id))
             {
                 throw new Exception("addUri fail");
@@ -107,6 +110,7 @@ namespace ParseGet
 
             if (ErrCode != 0)
             {
+                if (ErrCode < 8 && retrys-- != 0) goto retry;
                 try
                 {
                     s = ErrMsgs[ErrCode];

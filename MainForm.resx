@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -125,7 +125,7 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
         LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
         ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAADe
-        CAAAAk1TRnQBSQFMAgEBAgEAASQBAgEkAQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
+        CAAAAk1TRnQBSQFMAgEBAgEAATQBAgE0AQIBEAEAARABAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQCAAEo
         AwABQAMAARADAAEBAQABCAYAAQQYAAGAAgABgAMAAoABAAGAAwABgAEAAYABAAKAAgADwAEAAcAB3AHA
         AQAB8AHKAaYBAAEzBQABMwEAATMBAAEzAQACMwIAAxYBAAMcAQADIgEAAykBAANVAQADTQEAA0IBAAM5
         AQABgAF8Af8BAAJQAf8BAAGTAQAB1gEAAf8B7AHMAQABxgHWAe8BAAHWAucBAAGQAakBrQIAAf8BMwMA
@@ -314,12 +314,6 @@ Press 'Enter' to add URL.</value>
   <data name="miShutdown.Text" xml:space="preserve">
     <value>Shutdown when done</value>
   </data>
-  <data name="miEditINI.Size" type="System.Drawing.Size, System.Drawing">
-    <value>211, 22</value>
-  </data>
-  <data name="miEditINI.Text" xml:space="preserve">
-    <value>Edit Parser Script ...</value>
-  </data>
   <data name="debug.Size" type="System.Drawing.Size, System.Drawing">
     <value>109, 22</value>
   </data>
@@ -361,6 +355,18 @@ Press 'Enter' to add URL.</value>
   </data>
   <data name="miLog.Text" xml:space="preserve">
     <value>Log Window</value>
+  </data>
+  <data name="miEditLog.Size" type="System.Drawing.Size, System.Drawing">
+    <value>211, 22</value>
+  </data>
+  <data name="miEditLog.Text" xml:space="preserve">
+    <value>Edit Log ...</value>
+  </data>
+  <data name="miEditINI.Size" type="System.Drawing.Size, System.Drawing">
+    <value>211, 22</value>
+  </data>
+  <data name="miEditINI.Text" xml:space="preserve">
+    <value>Edit Parser Script ...</value>
   </data>
   <data name="toolStripSeparator3.Size" type="System.Drawing.Size, System.Drawing">
     <value>208, 6</value>
@@ -459,6 +465,25 @@ Press 'Enter' to add URL.</value>
   </data>
   <data name="btnOption.ToolTipText" xml:space="preserve">
     <value>Option</value>
+  </data>
+  <data name="btnReload.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAADFSURBVDhPzdGxCoMwEAbgvFOhUweXUlC6SDe72Uk6ZegQ
+        6CIUpLg5uvim8S56IebO1qFDf7hF7/+Gi/q/GGPst5lXefCnvmo31aWy5bm0xbFwkx9ym+5TNyKCH+t7
+        bc1tGwKVJUJAiCCwhkCFA41uPIATJkagwoH20XpESohAhQPds/OIlGSXeAQqMkCIFAToJlDhQP/qVxE8
+        HAE4UJGBGMGDZadsev/gdaDCgeE9iEj8OohAZQnM2YTg3rQuhxY+za+i1AjRNHHkkIuQcQAAAABJRU5E
+        rkJggg==
+</value>
+  </data>
+  <data name="btnReload.ImageTransparentColor" type="System.Drawing.Color, System.Drawing">
+    <value>Magenta</value>
+  </data>
+  <data name="btnReload.Size" type="System.Drawing.Size, System.Drawing">
+    <value>23, 22</value>
+  </data>
+  <data name="btnReload.ToolTipText" xml:space="preserve">
+    <value>Reload</value>
   </data>
   <data name="Toolbar.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
@@ -875,6 +900,12 @@ Press 'Enter' to add URL.</value>
   <data name="&gt;&gt;btnOption.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripDropDownButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;miShutdown.Name" xml:space="preserve">
+    <value>miShutdown</value>
+  </data>
+  <data name="&gt;&gt;miShutdown.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;miEditINI.Name" xml:space="preserve">
     <value>miEditINI</value>
   </data>
@@ -1013,6 +1044,12 @@ Press 'Enter' to add URL.</value>
   <data name="&gt;&gt;miLangEn.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;btnReload.Name" xml:space="preserve">
+    <value>btnReload</value>
+  </data>
+  <data name="&gt;&gt;btnReload.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;miOpen.Name" xml:space="preserve">
     <value>miOpen</value>
   </data>
@@ -1121,10 +1158,10 @@ Press 'Enter' to add URL.</value>
   <data name="&gt;&gt;colETA.Type" xml:space="preserve">
     <value>System.Windows.Forms.ColumnHeader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;miShutdown.Name" xml:space="preserve">
-    <value>miShutdown</value>
+  <data name="&gt;&gt;miEditLog.Name" xml:space="preserve">
+    <value>miEditLog</value>
   </data>
-  <data name="&gt;&gt;miShutdown.Type" xml:space="preserve">
+  <data name="&gt;&gt;miEditLog.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">

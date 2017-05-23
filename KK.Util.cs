@@ -363,6 +363,23 @@ namespace KK
             return BitConverter.ToInt32(bytes, 0);
         }
 
+        public static void PaddingZero(string fileName)
+        {
+            FileStream fs = null;
+            try
+            {
+                fs = new FileStream(fileName, FileMode.Append);
+                fs.WriteByte(0);
+            }
+            catch
+            {
+            }
+            finally
+            {
+                if (fs != null) fs.Close();
+            }
+        }
+
         public static bool UnGZip(string inFile, string outFile)
         {
             bool ret = false;

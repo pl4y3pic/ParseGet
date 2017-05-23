@@ -93,6 +93,14 @@ namespace ParseGet
                         {
                             break;
                         }
+                        else if (name == "error")
+                        {
+                        	s = vars[name];
+                        	if (!string.IsNullOrEmpty(s))
+                        	{
+                        		throw new WebException(s);
+                        	}
+                        }
                         else if (name == "test") // check result
                         {
                             WebHeaderCollection headers = Web.HttpHead(vars["test"]);
@@ -350,13 +358,14 @@ namespace ParseGet
         {
             string ss = Evaluate(ref s, vars);
             string start, end;
-            int i, j, n, max, max_n;
+            int i, j, n, max, max_n, prefer;
             bool not_http;
 
             // find the best index
+            Int32.TryParse(vars["prefer"], out prefer);
             start = Evaluate(ref s, vars);
             end = Evaluate(ref s, vars);
-            max = 0;
+            max = -1;
             max_n = 0;
             i = 0;
             j = 0;
@@ -366,7 +375,7 @@ namespace ParseGet
                 i = ss.IndexOf(start, i) + start.Length;
                 j = ss.IndexOf(end, i);
                 Int32.TryParse(ss.Substring(i, j - i), out j);
-                if (j > max)
+                if (j > max && max != prefer)
                 {
                     max = j;
                     max_n = n;
@@ -396,8 +405,27 @@ namespace ParseGet
                 }
                 n++;
             }
+            s = ss.Substring(i, j - i);
+            
+            if (s.StartsWith("/*"))
+            {
+            	s = s + " + ";
+            	start = "";
+            	while (true)
+            	{
+            		i = s.IndexOf("*/");
+            		if (i < 0) break;
+            		i = i + 2;
+            		j = s.IndexOf(" + ", i);
+            		end = s.Substring(i, j - i);
+            		i = ss.IndexOf(end) + end.Length + 2;
+            		start = start + ss.Substring(i, ss.IndexOf("\";", i) - i).Replace("\" + \"", "");
+            		s = s.Substring(j + 3);
+            	}
+            	s = start;
+            }
 
-            return ss.Substring(i, j - i);
+            return s;
         }
 
         private static string _format(string s, VarList vars)
@@ -447,6 +475,12 @@ namespace ParseGet
                     return ss.Substring(i, j);
                 }
                 j = ss.IndexOf(end, i);
+	            if (!string.IsNullOrEmpty(s))
+	            {
+	            	i = j + end.Length;
+	                end = Evaluate(ref s, vars);
+	                j = ss.IndexOf(end, i);
+	            }
                 if (j >= 0)
                 {
                     return ss.Substring(i, j - i);

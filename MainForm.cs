@@ -33,6 +33,7 @@ namespace ParseGet
             ProcessStartInfo psi = new ProcessStartInfo();
             psi.FileName = Application.StartupPath + "\\aria2c.exe";
             psi.Arguments = "-k2M -x9 -j9 --enable-rpc=true --auto-file-renaming=false --max-download-result=9" +
+				//" --all-proxy=127.0.0.1:8787" +
                 " -l- --log-level=" + AppConfig.Settings.LogLevel +
                 " --stop-with-process=" + Process.GetCurrentProcess().Id;
             psi.WindowStyle = ProcessWindowStyle.Minimized;
@@ -911,5 +912,24 @@ namespace ParseGet
         {
             TopMost = miStayTop.Checked;
         }
+
+		void BtnReloadClick(object sender, EventArgs e)
+		{
+            Aria2.SetOptions("split:" + MaxConnections.Text, true);	
+		}
+		void MiEditLogClick(object sender, EventArgs e)
+		{
+			string LogFile = Application.StartupPath + "//ParseGet.log";
+			Memo.SaveFile(LogFile, RichTextBoxStreamType.UnicodePlainText);
+            try
+            {
+                Process.Start(LogFile);  // Edit Log ...
+            }
+            catch (Exception ex)
+            {
+                Log(Resources.Error + ex.Message);
+            }
+			
+		}
     }
 }
