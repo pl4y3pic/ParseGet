@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace ParseGet
 {
-    internal class Downloader : BackgroundWorker
+    class Downloader : BackgroundWorker
     {
         public const int PROGRESS = 0;
         public const int FILEINFO = -1;
@@ -25,7 +25,7 @@ namespace ParseGet
         public int Speed;
         public int ErrCode;
 
-        private static SortedList<int, string> ErrMsgs = new SortedList<int, string>
+        static SortedList<int, string> ErrMsgs = new SortedList<int, string>
         {
         	{1, "connection closed"},
             {2, "time out"},
@@ -36,7 +36,7 @@ namespace ParseGet
             {13, "file already existed"},
         };
 
-        private static int count;
+        static int count;
 
         public static int Count
         {
@@ -50,7 +50,7 @@ namespace ParseGet
         {
             WorkerReportsProgress = true;
             WorkerSupportsCancellation = true;
-            DoWork += new DoWorkEventHandler(Downloader_DoWork);
+			DoWork += Downloader_DoWork;
 
             count++;
         }
@@ -71,9 +71,9 @@ namespace ParseGet
             CancelAsync();
         }
 
-        private string id;
+        string id;
 
-        private void Download_File(string url)
+        void Download_File(string url)
         {
             string r = string.IsNullOrEmpty(Referer) ? null : string.Format(", \"referer\":\"{0}\"", Referer);
             string s = string.IsNullOrEmpty(FileName) ? null : string.Format(", \"out\":\"{0}\"", FileName);
@@ -123,12 +123,12 @@ namespace ParseGet
             }
         }
 
-        private void Download_Playlist(string url)
+        void Download_Playlist(string url)
         {
-            string host = url.Remove(url.IndexOf("/", 7));
+            string host = url.Remove(url.IndexOf("/", 7, StringComparison.Ordinal));
             string[] ss = Web.HttpGet(url).Split('\n');
-            byte[] buffer = new byte[32768];
-            FileStream f = new FileStream(SavePath + "\\" + FileName, FileMode.OpenOrCreate);
+            var buffer = new byte[32768];
+            var f = new FileStream(SavePath + "\\" + FileName, FileMode.OpenOrCreate);
             long Downloaded = f.Length;
 
             f.Seek(0, SeekOrigin.End);
@@ -138,14 +138,14 @@ namespace ParseGet
             {
                 int retrys = 3;
 
-                if (!s.StartsWith("/")) continue;
+                if (!s.StartsWith("/", StringComparison.Ordinal)) continue;
 
             retry:
                 try
                 {
-                    HttpWebRequest req = (HttpWebRequest)WebRequest.Create(host + s);
+                    var req = (HttpWebRequest)WebRequest.Create(host + s);
                     req.Proxy = Web.Proxy;
-                    HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+                    var res = (HttpWebResponse)req.GetResponse();
 
                     FileSize = Int32.Parse(res.Headers["Content-Length"]);
                     if (Downloaded >= FileSize)
@@ -199,7 +199,7 @@ namespace ParseGet
             f.Close();
         }
 
-        private void Downloader_DoWork(object sender, DoWorkEventArgs e)
+        void Downloader_DoWork(object sender, DoWorkEventArgs e)
         {
             string url = e.Argument as string;
 
@@ -207,19 +207,16 @@ namespace ParseGet
             Program.SetCultureInfo();
 
             // Retrieving real download url ...
-            if (Parser.IsValidURL(url) > 0)
-            {
-                //ReportStatus(Resources.RetrieveURL);
-                if (!Parser.Parse(this, ref url))
-                {
-                    throw new Exception("Cann't retrieving a real URL");
-                }
-                else if (!url.StartsWith("http") || AppConfig.Settings.ParseOnly)
-                {
-                    e.Result = url;
-                    return;
-                }
-            }
+            if (Parser.IsValidURL(url) > 0) {
+				//ReportStatus(Resources.RetrieveURL);
+				if (!Parser.Parse(this, ref url)) {
+					throw new Exception("Cann't retrieving a real URL");
+				}
+				if (!url.StartsWith("http", StringComparison.Ordinal) || AppConfig.Settings.ParseOnly) {
+					e.Result = url;
+					return;
+				}
+			}
 
             FileName = Util.ValidFileName(FileName);
             if (!Directory.Exists(SavePath))
@@ -227,14 +224,11 @@ namespace ParseGet
                 Directory.CreateDirectory(SavePath);
             }
 
-            if (url.EndsWith(".m3u8")) /* playlist */
-            {
-                Download_Playlist(url);
-            }
-            else
-            {
-                Download_File(url);
-            }
+			if (url.EndsWith(".m3u8", StringComparison.Ordinal)) { /* playlist */
+				Download_Playlist(url);
+			} else {
+				Download_File(url);
+			}
 
             e.Cancel = CancellationPending;
         }

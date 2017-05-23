@@ -9,12 +9,12 @@ namespace ParseGet
 {
     class ShooterSubExtractor
     {
-        private string _outputDir = String.Empty;
-        private string _subFileNameWithoutExt = String.Empty;
-        private Dictionary<string, int> _extCounter;
-        private string _videoFilePath = String.Empty;
-        private string _videoFileName = String.Empty;
-        private string _dumpFilePath = String.Empty;
+        string _outputDir = String.Empty;
+        string _subFileNameWithoutExt = String.Empty;
+        readonly Dictionary<string, int> _extCounter;
+        string _videoFilePath = String.Empty;
+        string _videoFileName = String.Empty;
+        string _dumpFilePath = String.Empty;
 
         public enum SubExtractResult
         {
@@ -55,26 +55,13 @@ namespace ParseGet
             {
                 subTempStream = new FileStream(_dumpFilePath, FileMode.Open, FileAccess.Read);
                 subTempReader = new BinaryReader(subTempStream);
-                SByte statCode = (SByte)subTempReader.ReadByte();
+                var statCode = (SByte)subTempReader.ReadByte();
                 bool bOk = true;
                 if (statCode < 0)
                 {
-                    if (statCode == -1)
-                    {
-                        //subtitle not found
-                        result = SubExtractResult.NoSubFound;
-                    }
-                    else
-                    {
-                        //data connection error
-                        result = SubExtractResult.Error;
-                    }
+					result = statCode == -1 ? SubExtractResult.NoSubFound : SubExtractResult.Error;
 
                     bOk = false;
-                }
-                else
-                {
-                    //sub found
                 }
 
                 if (bOk)
@@ -99,7 +86,7 @@ namespace ParseGet
             return result;
         }
 
-        private void HandleSubPackage(BinaryReader reader)
+        void HandleSubPackage(BinaryReader reader)
         {
             //TODO: Handle errors
             //package header
@@ -112,7 +99,7 @@ namespace ParseGet
 
             //file data header
             int fileDataLen = Util.BytesToInt32(reader.ReadBytes(4), ByteOrder.BigEndian);
-            SByte numOfFiles = (SByte)reader.ReadByte();
+            var numOfFiles = (SByte)reader.ReadByte();
 
             for (int i = 0; i < numOfFiles; i++)
             {
@@ -120,7 +107,7 @@ namespace ParseGet
             }
         }
 
-        private void HandleSingleSub(BinaryReader reader)
+        void HandleSingleSub(BinaryReader reader)
         {
             //TODO: Handle errors
             int singleFilePackLen = Util.BytesToInt32(reader.ReadBytes(4), ByteOrder.BigEndian);
@@ -131,9 +118,9 @@ namespace ParseGet
 
             int leftToRead = fileLen;
             const int BufferSize = 4096;
-            byte[] buffer = new byte[BufferSize];
+            var buffer = new byte[BufferSize];
             string tempFilePath = Path.GetTempFileName();
-            FileStream tempStream =
+            var tempStream =
                 new FileStream(tempFilePath, FileMode.Open, FileAccess.ReadWrite);
             bool bGzipped = false;
 
@@ -185,7 +172,7 @@ namespace ParseGet
             }
         }
 
-        private string GetOutputFilename(string ext)
+        string GetOutputFilename(string ext)
         {
             const string LangId = "chn";
             int count;

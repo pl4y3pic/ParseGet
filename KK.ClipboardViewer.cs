@@ -30,26 +30,24 @@ namespace KK
     /// <author><name>Rui Godinho Lopes</name><email>rui@ruilopes.com</email></author>
     public class ClipboardViewer : Component
     {
-        public ClipboardViewer()
-        {
-            //enabled = false;
-        }
 
-        /// <summay>Raised when the clipboard changes contents.</summary>
+        /// <summary>Raised when the clipboard changes contents.</summary>
         public event EventHandler ClipboardChanged
         {
             add { fClipboardChanged += value; }
+            // disable once DelegateSubtraction
             remove { fClipboardChanged -= value; }
         }
 
-        /// <summay>Raised after property Enabled change.</summary>
+        /// <summary>Raised after property Enabled change.</summary>
         public event EventHandler EnabledChanged
         {
             add { fEnabledChanged += value; }
+            // disable once DelegateSubtraction
             remove { fEnabledChanged -= value; }
         }
 
-        /// <summay>Enables or disabled the clipboard monitoring.</summary>
+        /// <summary>Enables or disabled the clipboard monitoring.</summary>
         [DefaultValue(false)]
         public bool Enabled
         {
@@ -64,7 +62,7 @@ namespace KK
                 if (value)
                 {
                     viewerWindow = new ClipboardViewerWindow();
-                    viewerWindow.Changed += new EventHandler(OnClipboardChanged);
+					viewerWindow.Changed += OnClipboardChanged;
                     viewerWindow.Create();
                 }
                 else
@@ -78,7 +76,7 @@ namespace KK
             }
         }
 
-        /// <summay>Called to free resources.</summary>
+        /// <summary>Called to free resources.</summary>
         protected override void Dispose(bool disposing)
         {
             try
@@ -95,7 +93,7 @@ namespace KK
             }
         }
 
-        /// <summay>Called when the <c>Enabled</c> property changes.</summary>
+        /// <summary>Called when the <c>Enabled</c> property changes.</summary>
         /// <para>Raises the <c>EnabledChanged</c> event.</para>
         protected virtual void OnEnabledChanged(Object sender, EventArgs e)
         {
@@ -105,7 +103,7 @@ namespace KK
             }
         }
 
-        /// <summay>Called when the cliboard contents changes.</summary>
+        /// <summary>Called when the cliboard contents changes.</summary>
         /// <para>Raises the <c>ClipboardChanged</c> event.</para>
         protected virtual void OnClipboardChanged(Object sender, EventArgs e)
         {
@@ -115,35 +113,36 @@ namespace KK
             }
         }
 
-        private bool enabled; // If true we are monitoring the clipboard
-        private EventHandler fEnabledChanged;
-        private EventHandler fClipboardChanged;
-        private ClipboardViewerWindow viewerWindow; // Our clipboard monitor window
+        bool enabled; // If true we are monitoring the clipboard
+        EventHandler fEnabledChanged;
+        EventHandler fClipboardChanged;
+        ClipboardViewerWindow viewerWindow; // Our clipboard monitor window
 
 
 
         /// <summary>Implementation helper class.</summary>
         /// <para>This class handles clipboard notifications and raises the
         /// <c>Changed</c> event when the clipboard contents change.</para>
-        private class ClipboardViewerWindow : NativeWindow, IDisposable
+        class ClipboardViewerWindow : NativeWindow, IDisposable
         {
 
             /// <para>Creates a message only window to receive clipboard changing messages.</para>
             public void Create()
             {
-                CreateParams cp = new CreateParams();
+                var cp = new CreateParams();
 
                 // If we are on Windows 2000 or higher we create a message-only window
-                if (System.Environment.OSVersion.Version.Major >= 5)
+                if (Environment.OSVersion.Version.Major >= 5)
                     cp.Parent = (IntPtr)HWND_MESSAGE; // this window only needs to receive messages
 
                 CreateHandle(cp);
             }
 
-            /// <summay>Raised when the clipboard changes contents.</summary>
+            /// <summary>Raised when the clipboard changes contents.</summary>
             public event EventHandler Changed
             {
                 add { fChanged += value; }
+                // disable once DelegateSubtraction
                 remove { fChanged -= value; }
             }
 
@@ -158,7 +157,7 @@ namespace KK
                     DestroyHandle();
             }
 
-            /// <summay>Called when the clipboard changes contents.</summary>
+            /// <summary>Called when the clipboard changes contents.</summary>
             /// <para>Raises the Changed event.</para>
             protected void OnChanged(Object sender, EventArgs e)
             {
@@ -214,12 +213,12 @@ namespace KK
                 base.DestroyHandle();
             }
 
-            private const int WM_CHANGECBCHAIN = 0x030D;
-            private const int WM_DRAWCLIPBOARD = 0x0308;
-            private const int HWND_MESSAGE = -3;
+            const int WM_CHANGECBCHAIN = 0x030D;
+            const int WM_DRAWCLIPBOARD = 0x0308;
+            const int HWND_MESSAGE = -3;
 
-            private IntPtr nextClipboardWindow; // Contains the next window in clipboard chain
-            private EventHandler fChanged;  // Delegate object with user event handlers for the Changed event.
+            IntPtr nextClipboardWindow; // Contains the next window in clipboard chain
+            EventHandler fChanged;  // Delegate object with user event handlers for the Changed event.
 
 
             // Win32 functions needed

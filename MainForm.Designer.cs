@@ -1,4 +1,4 @@
-﻿namespace ParseGet
+namespace ParseGet
 {
     partial class MainForm
     {

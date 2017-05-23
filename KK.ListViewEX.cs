@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace KK
 {
-    internal class ListViewEX : ListView
+    class ListViewEX : ListView
     {
         public ListViewEX()
         {
@@ -36,30 +36,24 @@ namespace KK
 
         protected override void OnDrawSubItem(DrawListViewSubItemEventArgs e)
         {
-            if (e.SubItem.Text.EndsWith("%"))
-            {
-                float percent;
-                if (Single.TryParse(e.SubItem.Text.Remove(e.SubItem.Text.Length - 1), out percent))
-                {
-                    NativeMethods.RECT rc = new NativeMethods.RECT();
-                    rc.Left = e.Bounds.X + (GridLines ? 2 : 1);
-                    rc.Top = e.Bounds.Y + (GridLines ? 1 : 2);
-                    rc.Right = rc.Left + (int)((e.Bounds.Width - (GridLines ? 4 : 2)) * percent / 100);
-                    rc.Bottom = e.Bounds.Bottom - 2;
+			if (e.SubItem.Text.EndsWith("%", StringComparison.Ordinal)) {
+				float percent;
+				if (Single.TryParse(e.SubItem.Text.Remove(e.SubItem.Text.Length - 1), out percent)) {
+					var rc = new NativeMethods.RECT();
+					rc.Left = e.Bounds.X + (GridLines ? 2 : 1);
+					rc.Top = e.Bounds.Y + (GridLines ? 1 : 2);
+					rc.Right = rc.Left + (int)((e.Bounds.Width - (GridLines ? 4 : 2)) * percent / 100);
+					rc.Bottom = e.Bounds.Bottom - 2;
 
-                    e.DrawText(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-                    NativeMethods.InvertRect(e.Graphics.GetHdc(), ref rc);
-                    e.Graphics.ReleaseHdc();
-                }
-                else
-                {
-                    e.DrawDefault = true;
-                }
-            }
-            else
-            {
-                e.DrawDefault = true;
-            }
+					e.DrawText(TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+					NativeMethods.InvertRect(e.Graphics.GetHdc(), ref rc);
+					e.Graphics.ReleaseHdc();
+				} else {
+					e.DrawDefault = true;
+				}
+			} else {
+				e.DrawDefault = true;
+			}
 
             base.OnDrawSubItem(e);
         }

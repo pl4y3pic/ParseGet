@@ -7,12 +7,12 @@ using System.Threading;
 
 namespace ParseGet
 {
-    internal static class Aria2
+    static class Aria2
     {
-        private static string JsonRpcUrl = "http://127.0.0.1:6800/jsonrpc";
+        const string JsonRpcUrl = "http://127.0.0.1:6800/jsonrpc";
         public static List<string> ids = new List<string>();
 
-        private static string RPC(string method, string param = null)
+        static string RPC(string method, string param = null)
         {
             string url = string.Format("{0}?method=aria2.{1}&id=PG", JsonRpcUrl, method);
             if (!string.IsNullOrEmpty(param))
@@ -39,7 +39,8 @@ namespace ParseGet
             {
                 RPC("remove", id);
             }
-            catch {};
+            // disable once EmptyGeneralCatchClause
+            catch {}
         }
 
         public static string TellStatus(string id, string param = null)
@@ -56,7 +57,7 @@ namespace ParseGet
             RPC("changeGlobalOption", "{\"" + options.Replace(":", "\":\"").Replace(",", "\", \"") + "\"}");
         }
 
-        private static void SetOptions_DoWork(object sender, DoWorkEventArgs e)
+        static void SetOptions_DoWork(object sender, DoWorkEventArgs e)
         {
             string options = (string)(e.Argument as object[])[0];
             bool pause = (bool)(e.Argument as object[])[1];
@@ -70,7 +71,7 @@ namespace ParseGet
                     do
                     {
                         Thread.Sleep(300);
-                    } while (!RPC("tellActive", "[\"gid\"]").EndsWith("[]}"));
+                    } while (!RPC("tellActive", "[\"gid\"]").EndsWith("[]}", StringComparison.Ordinal));
                 }
 
                 options = options.Replace(":", "\":\"").Replace(",", "\", \"");
@@ -88,8 +89,8 @@ namespace ParseGet
 
         public static void SetOptions(string options, bool pause)
         {
-            BackgroundWorker bg = new BackgroundWorker();
-            bg.DoWork += new DoWorkEventHandler(SetOptions_DoWork);
+            var bg = new BackgroundWorker();
+			bg.DoWork += SetOptions_DoWork;
             bg.RunWorkerAsync(new object[] { options, pause });
         }
 

@@ -5,11 +5,11 @@ using System.Text;
 
 namespace KK
 {
-    internal abstract class Credential
+    abstract class Credential
     {
-        private const int MAX_USERNAME = 100;
-        private const int MAX_PASSWORD = 100;
-        private const int MAX_DOMAIN = 100;
+        const int MAX_USERNAME = 100;
+        const int MAX_PASSWORD = 100;
+        const int MAX_DOMAIN = 100;
 
         public struct CREDUI_INFO
         {
@@ -56,12 +56,10 @@ namespace KK
 
         public static IntPtr OwnerHWnd = IntPtr.Zero;
 
-        private static CREDUI_FLAGS Flag = CREDUI_FLAGS.GENERIC_CREDENTIALS |
-                                           CREDUI_FLAGS.SHOW_SAVE_CHECK_BOX |
-                                           CREDUI_FLAGS.EXPECT_CONFIRMATION;
+        static CREDUI_FLAGS Flag = CREDUI_FLAGS.GENERIC_CREDENTIALS | CREDUI_FLAGS.SHOW_SAVE_CHECK_BOX | CREDUI_FLAGS.EXPECT_CONFIRMATION;
 
-        private static string ProxyUsername = string.Empty;
-        private static string ProxyPassword = string.Empty;
+        static string ProxyUsername = string.Empty;
+        static string ProxyPassword = string.Empty;
 
         internal static class NativeMethods
         {
@@ -86,13 +84,13 @@ namespace KK
 
         public static CredUIReturnCodes ProxyCredential(WebResponse res)
         {
-            StringBuilder username = new StringBuilder(ProxyUsername, MAX_USERNAME);
-            StringBuilder password = new StringBuilder(ProxyPassword, MAX_PASSWORD);
+            var username = new StringBuilder(ProxyUsername, MAX_USERNAME);
+            var password = new StringBuilder(ProxyPassword, MAX_PASSWORD);
 
             string host = WebRequest.DefaultWebProxy.GetProxy(res.ResponseUri).Host;
             bool savePwd = true;
 
-            CREDUI_INFO info = new CREDUI_INFO();
+            var info = new CREDUI_INFO();
             info.cbSize = Marshal.SizeOf(info);
             info.hwndParent = OwnerHWnd;
             info.pszCaptionText = "Connect to " + host;
