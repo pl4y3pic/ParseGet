@@ -70,10 +70,10 @@ namespace KK
                 req.Proxy = Proxy;
                 req.CookieContainer = CC;
                 req.AutomaticDecompression = DecompressionMethods.GZip;
-                req.Timeout = 10000; // ms
+                req.Timeout = 20000; // ms
                 req.Method = (encoding != null) ? "GET" : "HEAD";
-                //req.KeepAlive = true;
-                //req.UserAgent = "Safari/537.36";
+                req.KeepAlive = true;
+                req.UserAgent = "Safari/537.36";
 
                 var res = (HttpWebResponse)req.GetResponse();
                 if (encoding == null)

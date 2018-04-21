@@ -218,13 +218,20 @@ namespace ParseGet
             {
                 if (s.StartsWith("http", StringComparison.Ordinal) || Parser.IsValidURL(s) > 0)
                 {
-                    Match m = Regex.Match(s, "{\\d+-\\d+}");
+                    Match m = Regex.Match(s, "{\\d+-\\d+(\\.*\\d+|)}");
                     if (m.Success)
                     {
                         int i, end;
                         Int32.TryParse(Util.GetSubStr(m.Value, "{", "-"), out i);
-                        Int32.TryParse(Util.GetSubStr(m.Value, "-", "}"), out end);
-                        s = s.Replace(m.Value, "{0}");
+						if (m.Value.Contains("."))
+						{
+							Int32.TryParse(Util.GetSubStr(m.Value, "-", "."), out end);
+							s = s.Replace(m.Value, "{0:D" + Util.GetSubStr(m.Value, "."));
+						} else {
+							string ss = Util.GetSubStr(m.Value, "-", "}");
+							Int32.TryParse(ss, out end);
+							s = s.Replace(m.Value, "{0:D" + ss.Length + "}");
+						}
                         while (i <= end)
                         {
                             StartNewTask(string.Format(s, i));
@@ -237,7 +244,10 @@ namespace ParseGet
                 else
                 {
                     // Keyword for search
-                    Process.Start("https://vimeo.com/search?q=" + s);
+                    Process.Start("http://torrentkitty.uno/tk/" + s + "/1-0-0.html");
+                    Process.Start("http://www.sosobtt.com/s/" + s);
+                    Process.Start("http://www.javdatabase.com/movies/" + s);
+                    Process.Start("https://watchjavonline.com/?s=" + s);
                 }
             }
         }

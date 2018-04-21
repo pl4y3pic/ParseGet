@@ -31,11 +31,11 @@ namespace ParseGet
                             ShooterDownloader.Start(args[i]);
                         }
                     }
-                    else if (s == "/zero")
+                    else if (s == "/crypt")
                     {
                         for (int i = 1; i < args.Length; i++)
                         {
-                            KK.Util.PaddingZero(args[i]);
+                            KK.Util.Crypt(args[i]);
                         }
                         //MessageBox.Show("All done!");
                     }

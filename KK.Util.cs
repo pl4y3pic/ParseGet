@@ -358,13 +358,26 @@ namespace KK
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        public static void PaddingZero(string fileName)
+        unsafe public static void Crypt(string fileName)
         {
             FileStream fs = null;
             try
             {
-                fs = new FileStream(fileName, FileMode.Append);
-                fs.WriteByte(0);
+            	var buffer = new byte[256];
+                fs = new FileStream(fileName, FileMode.Open);
+                fs.Read(buffer, 0, 256);
+                fixed (byte* pb = buffer)
+                {
+                	var p = (uint*)pb;
+               		int i = 0;
+	                while (i < 64) {
+               			*p ^= 0xdeadc0de;
+               			p++;
+	    	            i++;
+	                }
+                }
+                fs.Seek(0, SeekOrigin.Begin);
+                fs.Write(buffer, 0, 256);
             }
             catch
             {
