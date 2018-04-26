@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Threading;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
+using KK;
 
 namespace ParseGet
 {
@@ -35,9 +38,63 @@ namespace ParseGet
                     {
                         for (int i = 1; i < args.Length; i++)
                         {
-                            KK.Util.Crypt(args[i]);
+                            Util.Crypt(args[i]);
                         }
                         //MessageBox.Show("All done!");
+                    }
+                    else if (s == "/namer")
+                    {
+                        for (int i = 1; i < args.Length; i++)
+                        {
+                        	s = args[i];
+                        	int j = s.LastIndexOf('\\') + 1;
+                        	string dir = s.Substring(0, j);
+                       		string id = s.Substring(j, s.LastIndexOf('.') - j);
+                       		string ss;
+                       		bool subbed = Regex.Match(id, "[cCrR]$").Success;
+
+                       		foreach (Match m in Regex.Matches(id, "[a-zA-Z]{2,5}-?\\d{2,5}"))
+                       		{
+	                       		try
+	                        	{
+		                       		id = m.Value;
+		                       		#if false
+		                       		if (!id.Contains("-"))
+		                       		{
+		                       			id = id.Insert(Regex.Match(id, "\\d+").Index, "-");
+		                       		}
+		                       		#endif
+		
+		                        	s = Web.HttpGet("http://www.19lib.com/cn/vl_searchbyid.php?keyword=" + id);
+		                        	j = s.IndexOf("<div class=\"id\">" + id + "</div>");
+		                        	if (j > 0)
+		                        	{
+		                        		j = s.IndexOf("<a id=\"", j) + 7;
+		                        		s = Web.HttpGet("http://www.19lib.com/cn/?v=" + s.Substring(j, 10));
+		                        	}
+		                        	id = Util.GetSubStr(s, "<title>", " - JAVLibrary</title>");
+		                        	s = Util.GetSubStr(s, "<div id=\"video_cast\"", "</tr>");
+		                        	if (string.IsNullOrEmpty(s)) continue;
+		                        	j = 0;
+		                        	while (true)
+		                        	{
+		                        		j = s.IndexOf("rel=\"tag\">", j);
+		                        		if (j < 0) break;
+		                        		j = j + 10;
+		                        		ss = s.Substring(j, s.IndexOf('<', j) - j);
+		                        		if (!id.Contains(ss))
+		                        		{
+		                        			id += " " + ss;
+		                        		}
+		                        	}
+
+		                        	if (subbed) id += " (S)";
+		                        	File.Move(args[i], dir + id + ".mpv");
+		                        	break;
+	                        	}
+	                       		catch {}
+                       		}
+                        }
                     }
                 }
                 else
