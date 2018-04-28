@@ -49,7 +49,7 @@ namespace ParseGet
                         	s = args[i];
                         	int j = s.LastIndexOf('\\') + 1;
                         	string dir = s.Substring(0, j);
-                       		string id = s.Substring(j, s.LastIndexOf('.') - j);
+                        	string id = s.Substring(j, s.LastIndexOf('.') - j).ToUpper();
                        		string ss;
                        		bool subbed = Regex.Match(id, "[cCrR]$").Success;
 
